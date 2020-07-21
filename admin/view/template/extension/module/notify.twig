@@ -1,0 +1,166 @@
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 9999;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- content-->
+        <div class="modal-tabs">
+          <div class="tab nav">
+          {% for key,template in customers_templates %}
+                {% if loop.first %}
+                {% set active = 'active' %}
+                  {% else %}
+                    {% set active = '' %}
+                  {% endif %}
+            <button class="tablinks {{ active }}" onclick="openCity(event, 'v-pills-{{ key }}' )">{{ template.name }}</button>
+               {% endfor %}
+            <button class="tablinks" onclick="openCity(event, 'v-pills-new' )">Пустая</button>
+          </div>
+          <div class="tab_content">
+            <div class="notify-customer-info">
+              <label for="" id="notify-customer-name" class="control-label"></label>
+              <label for="" class="control-label">Заказ № - </label>
+              <label for="" id="notify-customer-order" class="control-label"></label>
+              <label for="" id="" class="control-label">ТТН № - </label>
+              <label for="" id="notify-customer-ttn" class="control-label"></label>
+              <input type="text" id="notify-customer-phone" class="form-control">
+            </div>
+              {% for key,template in customers_templates %}
+                {% if loop.first %}
+                  {% set active = 'active' %}
+                        {% else %}
+                      {% set active = '' %}
+                  {% endif %}
+                <div id="v-pills-{{ key }}" class="tabcontent {{ active }}">
+                  <textarea id="template_text_{{ key }}" class="notify-template-text form-control" rows="5">{{ template.text }}</textarea>
+                </div>
+
+              {% endfor %}
+            <div id="v-pills-new" class="tabcontent">
+              <textarea id="template_text_new" class="notify-template-text form-control" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+          <!-- content-->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Отправить СМС</button>
+        <button type="button" class="btn btn-primary">Viber</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function showMessenger(name='',phone='',order='',ttn='') {
+
+    $('#notify-customer-name').html(name);
+    $('#notify-customer-order').html(order);
+    $('#notify-customer-phone').val(phone);
+    $('#notify-customer-ttn').val(ttn);
+
+  }
+
+  function openCity(evt, cityName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+      tabcontent[i].classList.remove('active-text');
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the link that opened the tab
+    document.getElementById(cityName).style.display = "block";
+    document.getElementById(cityName).classList.add('active-text');
+    evt.currentTarget.className += " active";
+  }
+</script>
+<style>
+  .modal-tabs {
+    display: flex;
+    width: 100%;
+  }
+  .tab_content {
+    width: 70%;
+  }
+  * {box-sizing: border-box}
+
+  /* Style the tab */
+  .tab {
+    float: left;
+    border: 1px solid #ccc;
+
+    width: 30%;
+    height: 300px;
+  }
+
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+  }
+
+  /* Change background color of buttons on hover */
+  .tab button:hover {
+    color: #fff;
+    background-color: #1e91cf;
+    border-color: #197bb0;
+  }
+
+  /* Create an active/current "tab button" class */
+  .tab button.active {
+    color: #fff;
+    background-color: #1e91cf;
+    border-color: #197bb0;
+  }
+
+  /* Style the tab content */
+  .tabcontent {
+    float: left;
+    padding: 0px 12px;
+
+    width: 100%;
+    border-left: none;
+    height: 300px;
+    display: none;
+  }
+  .tabcontent.active{
+    display: block;
+  }
+  .notify-template-text{
+    width: 100%;
+    margin-top: 15px;
+  }
+  .notify-customer-info #notify-customer-name{
+    display: block;
+  }
+  .notify-customer-info{
+    margin: 5px;
+    padding: 5px;
+  }
+</style>

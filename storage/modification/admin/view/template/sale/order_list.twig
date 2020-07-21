@@ -1,0 +1,3505 @@
+{{ header }}{{ column_left }}
+{{ svs_letsads_modal.body }}
+<div id="content">
+<div class="page-header">
+  <div class="container-fluid">
+    <div class="pull-right">
+      <button type="button" data-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-order').toggleClass('hidden-sm hidden-xs hidden-md hidden-lg');" class="btn btn-default"><i class="fa fa-filter"></i></button>
+
+	    {% if export_order is not empty %}<button type="submit" id="button-oexport" form="form-order" formaction="{{ export_order }}" data-toggle="tooltip" title="{{ button_export }}" class="btn btn-info"><i class="fa fa-table" aria-hidden="true"></i></button> {% endif %}
+		{% if merge_order is not empty %}<a id="button-merge" onclick="getmerge();" data-toggle="tooltip" title="{{ button_merge }}" class="btn btn-warning"><i class="fa fa-share-alt-square" aria-hidden="true"></i></a> {% endif %}
+						
+      <button type="submit" id="button-shipping" form="form-order" formaction="{{ shipping }}" formtarget="_blank" data-toggle="tooltip" title="{{ button_shipping_print }}" class="btn btn-info"><i class="fa fa-truck"></i></button>
+      <button type="submit" id="button-invoice" form="form-order" formaction="{{ invoice }}" formtarget="_blank" data-toggle="tooltip" title="{{ button_invoice_print }}" class="btn btn-info"><i class="fa fa-print"></i></button>
+      <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus"></i></a> </div>
+    <h1>{{ heading_title }}</h1>
+    <ul class="breadcrumb">
+      {% for breadcrumb in breadcrumbs %}
+      <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+<div class="container-fluid">{% if error_warning %}
+  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+  {% endif %}
+  {% if success %}
+  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+  {% endif %}
+  <div class="row">
+{{ sms_notify_list }}
+    <div id="filter-order">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-filter"></i> {{ text_filter }}</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group col-md-3">
+            <label class="control-label" for="input-order-id">{{ entry_order_id }}</label>
+            <input type="text" name="filter_order_id" value="{{ filter_order_id }}" placeholder="{{ entry_order_id }}" id="input-order-id" class="form-control" />
+          </div>
+          <div class="form-group col-md-3">
+            <label class="control-label" for="input-customer">{{ entry_customer }}</label>
+            <input type="text" name="filter_customer" value="{{ filter_customer }}" placeholder="{{ entry_customer }}" id="input-customer" class="form-control" />
+          </div>
+          <div class="form-group col-md-3">
+            <label class="control-label" for="input-order-status">{{ entry_order_status }}</label>
+            <select name="filter_order_status_id" id="input-order-status" class="form-control">
+              <option value=""></option>
+              
+              {% if filter_order_status_id == '0' %}
+              
+              <option value="0" selected="selected">{{ text_missing }}</option>
+              
+              {% else %}
+              
+              <option value="0">{{ text_missing }}</option>
+              
+              {% endif %}
+              {% for order_status in order_statuses %}
+              {% if order_status.order_status_id == filter_order_status_id %}
+              
+              <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+              
+              {% else %}
+              
+              <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+              
+              {% endif %}
+              {% endfor %}
+            
+            </select>
+          </div>
+         
+          <div class="form-group col-md-3">
+            <label class="control-label" for="input-date-added">{{ entry_date_added }}</label>
+            <div class="input-group date">
+              <input type="text" name="filter_date_added" value="{{ filter_date_added }}" placeholder="{{ entry_date_added }}" data-date-format="YYYY-MM-DD" id="input-date-added" class="form-control" />
+              <span class="input-group-btn">
+              <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+              </span> </div>
+          </div>
+       
+ 
+		
+
+      
+        <!--svs_order_plus_plus start-->
+<div class="form-group">
+              <label class="control-label" for="input-product_name">{{ entry_product_name }}</label>
+			  <div class="input-group">
+              <input type="text" name="filter_product_name" value="{{ filter_product_name }}" placeholder="{{ entry_product_name }}" id="input-product_name" class="form-control" />
+			  <div class="input-group-btn">
+                    <button type="button" id="button-clear-input-product_name" class="btn btn-default"><i class="fa fa-times"></i></button>
+			</div>
+			</div>
+			</div>
+              <script type="text/javascript">
+              $('input[name=\'filter_product_name\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/product/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['product_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'filter_product_name\']').val(item['label']);
+	}
+});
+$('#button-clear-input-product_name').on('click',function(){
+	$('input[name=\'filter_product_name\']').val('');
+	$('#button-filter').trigger('click');
+});
+ </script>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+			
+			
+			
+			
+			
+			
+			
+            
+           
+			
+			
+				
+            
+		
+		
+          <div class="form-group text-right">
+            <button type="button" id="button-filter" class="btn btn-default"><i class="fa fa-filter"></i> {{ button_filter }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-list"></i> {{ text_list }}</h3></div>
+        <ul class="nav nav-tabs">
+              <li class="active"><a href="#tab-new" data-toggle="tab">Новый</a></li>
+              <li><a href="#tab-prinyat" data-toggle="tab">Принят</a></li>
+              <li><a href="#tab-obrabotan" data-toggle="tab">Обработан</a></li>
+        <li><a href="#tab-oplachen" data-toggle="tab">Оплаченный</a></li>
+              <li><a href="#tab-otgruzhen" data-toggle="tab">Отгружен</a></li>
+
+              <li><a href="#tab-svyazatsa" data-toggle="tab">Не удалось связаться</a></li>
+              <li><a href="#tab-otvet" data-toggle="tab">До ответа клиента</a></li>
+              <li><a href="#tab-vypolnen" data-toggle="tab">Выполнен</a></li>
+              <li><a href="#tab-otmenen" data-toggle="tab">Отменен</a></li>
+              <li><a href="#tab-vse" data-toggle="tab">Все</a></li>
+          </ul>
+          <div class="tab-content">
+              <div class="tab-pane active" id="tab-new">
+<form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+				   <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+					<td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  1 %}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#exampleModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}',{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+				<td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+			 </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+					  
+					  <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+		
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+					  
+					  </div>
+					  
+					  
+					  
+					  
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+              </div>
+              <div class="tab-pane" id="tab-prinyat">
+
+              <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  '10'%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+              <div class="tab-pane" id="tab-obrabotan">
+
+              <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  '2'%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+              <div class="tab-pane" id="tab-oplachen">
+
+              <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  '14' or order.order_status_id ==  '5'%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+              <div class="tab-pane" id="tab-otgruzhen">
+
+                            <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  '15'%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+              <div class="tab-pane" id="tab-svyazatsa">
+
+                            <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  '9' or order.order_status_id ==  '16'%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+              <div class="tab-pane" id="tab-otvet">
+
+                            <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  ''%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+              <div class="tab-pane" id="tab-vypolnen">
+
+                            <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  '3'%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+              <div class="tab-pane" id="tab-otmenen">
+
+                            <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		{% if order.order_status_id ==  '9' or order.order_status_id ==  '7'%}
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div> 
+
+
+              <div class="tab-pane" id="tab-vse">
+
+                            <form method="post" action="" enctype="multipart/form-data" id="form-order">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                    <td class="text-right">{% if sort == 'o.order_id' %} <a href="{{ sort_order }}" class="{{ order|lower }}">{{ column_order_id }}</a> {% else %} <a href="{{ sort_order }}">{{ column_order_id }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'customer' %} <a href="{{ sort_customer }}" class="{{ order|lower }}">{{ column_customer }}</a> {% else %} <a href="{{ sort_customer }}">{{ column_customer }}</a> {% endif %}</td>
+ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		
+                    <td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
+                    <td class="text-right">{% if sort == 'o.total' %} <a href="{{ sort_total }}" class="{{ order|lower }}">{{ column_total }}</a> {% else %} <a href="{{ sort_total }}">{{ column_total }}</a> {% endif %}</td>
+                    <td class="text-left">{% if sort == 'o.date_added' %} <a href="{{ sort_date_added }}" class="{{ order|lower }}">{{ column_date_added }}</a> {% else %} <a href="{{ sort_date_added }}">{{ column_date_added }}</a> {% endif %}</td>
+                  
+           <td class="text-left">{% if sort == 'o.date_modified' %} <a href="{{ sort_date_modified }}" class="{{ order|lower }}">{{ column_date_modified }}</a> {% else %} <a href="{{ sort_date_modified }}">{{ column_date_modified }}</a> {% endif %}</td>
+                    <td class="text-right">ТТН</td>
+          <td class="text-right">{{ column_action }}</td>
+                  </tr>
+                </thead>
+                <tbody>
+                
+                {% if orders %}
+                 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		
+                  <td class="text-center"> {% if order.order_id in selected %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
+                    {% else %}
+                    <input type="checkbox" name="selected[]" value="{{ order.order_id }}" />
+                    {% endif %}
+                    <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
+                  <td class="text-right">{{ order.order_id }}</td>
+                   
+				<td class="text-left" style="min-width:210px;">
+					<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger"
+						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+						>Отправить уведомление</a>
+					</div>
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }} {{ order['novaposhta_cn_number'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-5">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-7">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		
+                   
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		
+                  <td class="text-right">{{ order.total }}</td>
+                  <td class="text-left">{{ order.time_date_added }}</td>
+                 <td class="text-left">{{ order.date_modified }}</td>
+        <td class="text-left">{{ order.novaposhta_cn_number }} <br>
+
+      
+        <!--svs_order_plus_plus start-->
+
+                            {{ order.novaposhta_status_text }}<br>
+
+        <!--svs_order_plus_plus end-->
+        
+      
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Новая почта</button>
+
+       </td>
+                  <td class="text-right"><div style="min-width: 120px;">
+                      <div class="btn-group"> 
+            
+            <a href="{{ order.edit }}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                    
+    
+                        <button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle"><span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+
+                          <li><a href="{{ order.order_id }}"><i class="fa fa-trash-o"></i> {{ button_delete }}</a></li>
+                        </ul>
+            
+            </div>
+            
+            
+            
+            
+                    </div></td>
+                </tr>
+                
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+                  </tbody>
+                
+              </table>
+            </div>
+          </form>
+
+              </div>
+
+
+            </div>
+         
+		<div class="panel-body table-responsive">
+		
+          
+          <div class="row">
+            <div class="col-sm-6 text-left">{{ pagination }}</div>
+            <div class="col-sm-6 text-right">{{ results }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript"><!--
+$('#button-filter').on('click', function() {
+	url = '';
+
+ 
+		var filter_build_price_yes_no = $('select[name=\'filter_build_price_yes_no\']').val();
+
+		if (filter_build_price_yes_no) {
+			url += '&filter_build_price_yes_no=' + encodeURIComponent(filter_build_price_yes_no);
+		}
+		var filter_rise_product_yes_no = $('select[name=\'filter_rise_product_yes_no\']').val();
+
+		if (filter_rise_product_yes_no) {
+			url += '&filter_rise_product_yes_no=' + encodeURIComponent(filter_rise_product_yes_no);
+		}
+		var filter_delivery_price = $('input[name=\'filter_delivery_price\']').val();
+
+		if (filter_delivery_price) {
+			url += '&filter_delivery_price=' + encodeURIComponent(filter_delivery_price);
+		}
+		var filter_calculated_summ = $('input[name=\'filter_calculated_summ\']').val();
+
+		if (filter_calculated_summ) {
+			url += '&filter_calculated_summ=' + encodeURIComponent(filter_calculated_summ);
+		}
+		var filter_manager_process_orders = $('select[name=\'filter_manager_process_orders\']').val();
+
+		if (filter_manager_process_orders) {
+			url += '&filter_manager_process_orders=' + encodeURIComponent(filter_manager_process_orders);
+		}
+		
+		var filter_date_added_start = $('input[name=\'filter_date_added_start\']').val();
+
+		if (filter_date_added_start) {
+			url += '&filter_date_added_start=' + encodeURIComponent(filter_date_added_start);
+		}
+		
+
+      
+        //svs_order_plus_plus start
+
+        var filter_product_name = $('input[name=\'filter_product_name\']').val();
+
+		if (filter_product_name) {
+			url += '&filter_product_name=' + encodeURIComponent(filter_product_name);
+		}
+
+        //svs_order_plus_plus end
+        
+      
+		var filter_date_added_end = $('input[name=\'filter_date_added_end\']').val();
+
+		if (filter_date_added_end) {
+			url += '&filter_date_added_end=' + encodeURIComponent(filter_date_added_end);
+		}
+		
+	var filter_order_id = $('input[name=\'filter_order_id\']').val();
+
+	if (filter_order_id) {
+		url += '&filter_order_id=' + encodeURIComponent(filter_order_id);
+	}
+
+	var filter_customer = $('input[name=\'filter_customer\']').val();
+
+	if (filter_customer) {
+		url += '&filter_customer=' + encodeURIComponent(filter_customer);
+	}
+
+	var filter_order_status_id = $('select[name=\'filter_order_status_id\']').val();
+
+	if (filter_order_status_id !== '') {
+		url += '&filter_order_status_id=' + encodeURIComponent(filter_order_status_id);
+	}
+
+	var filter_total = $('input[name=\'filter_total\']').val();
+
+	if (filter_total) {
+		url += '&filter_total=' + encodeURIComponent(filter_total);
+	}
+
+	var filter_date_added = $('input[name=\'filter_date_added\']').val();
+
+	if (filter_date_added) {
+		url += '&filter_date_added=' + encodeURIComponent(filter_date_added);
+	}
+
+	var filter_date_modified = $('input[name=\'filter_date_modified\']').val();
+
+	if (filter_date_modified) {
+		url += '&filter_date_modified=' + encodeURIComponent(filter_date_modified);
+	}
+
+	location = 'index.php?route=sale/order&user_token={{ user_token }}' + url;
+});
+//--></script> 
+  <script type="text/javascript"><!--
+$('input[name=\'filter_customer\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=customer/customer/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['customer_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'filter_customer\']').val(item['label']);
+	}
+});
+//--></script> 
+  <script type="text/javascript"><!--
+$('input[name^=\'selected\']').on('change', function() {
+	$('#button-shipping, #button-invoice').prop('disabled', true);
+
+		$('#button-oexport').prop('disabled', true);
+						
+
+	var selected = $('input[name^=\'selected\']:checked');
+
+	if (selected.length) {
+		$('#button-invoice').prop('disabled', false);
+
+		$('#button-oexport').prop('disabled', false);
+						
+	}
+
+	for (i = 0; i < selected.length; i++) {
+		if ($(selected[i]).parent().find('input[name^=\'shipping_code\']').val()) {
+			$('#button-shipping').prop('disabled', false);
+
+			break;
+		}
+	}
+});
+
+$('#button-shipping, #button-invoice').prop('disabled', true);
+
+		$('#button-oexport').prop('disabled', true);
+						
+
+$('input[name^=\'selected\']:first').trigger('change');
+
+// IE and Edge fix!
+$('#button-shipping, #button-invoice').on('click', function(e) {
+	$('#form-order').attr('action', this.getAttribute('formAction'));
+});
+
+$('#form-order li:last-child a').on('click', function(e) {
+	e.preventDefault();
+	
+	var element = this;
+	
+	if (confirm('{{ text_confirm }}')) {
+		$.ajax({
+			url: 'index.php?route=sale/orderpro/deleteOrder&user_token={{ user_token }}&store_id={{ store_id }}&order_id=' + $(element).attr('href'),
+			dataType: 'json',
+			beforeSend: function() {
+				$(element).parent().parent().parent().find('button').button('loading');
+			},
+			complete: function() {
+				$(element).parent().parent().parent().find('button').button('reset');
+			},
+			success: function(json) {
+				$('.alert-dismissible').remove();
+	
+				if (json['error']) {
+					$('#content > .container-fluid').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+				}
+	
+				if (json['success']) {
+					location = '{{ delete }}';
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
+	}
+});
+//--></script> 
+
+{% if merge_order is not empty %}
+<div id="merge_block"></div>
+<style>#merge_form .alert {text-align:center;font-size:13px;}</style>
+<script type="text/javascript">
+$(document).delegate('#old_order', 'change', function() {
+	if ($(this).val() == 1) {
+		$('#merge_form .old-status').slideDown('slow');
+	} else {
+		$('#merge_form .old-status').slideUp('slow');
+	}
+});
+
+function getmerge() {
+	$('#merge_modal').remove();
+    $.ajax({
+        url: 'index.php?route=sale/orderpro/getMerge&user_token={{ user_token }}',
+        type: 'post',
+        dataType: 'json',
+        data: $('#form-order :checked'),
+		beforeSend: function() {
+			$('.alert').remove();
+			$('#button-merge').children('.fa').addClass('fa-cog fa-spin');
+		},
+        success: function(json) {
+			if (json['error']) {
+				$('#button-merge').children('.fa').removeClass('fa-cog fa-spin');
+				$('#content > .container-fluid').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+			}
+			if (json['html']) {
+				$('#merge_block').html(json['html']);
+				setTimeout (function() {
+					$('#merge_modal').on('hidden.bs.modal', function(e) {location.reload();});
+					$('#merge_modal').modal('show');
+					$('#button-merge').children('.fa').removeClass('fa-cog fa-spin');
+				}, 600);
+			}
+        }
+	});
+}
+
+function merge_order() {
+    $.ajax({
+        url: 'index.php?route=sale/orderpro/MergeOrder&user_token={{ user_token }}',
+        type: 'post',
+        dataType: 'json',
+        data: $('#merge_form :input'),
+		beforeSend: function() {
+			$('#merge_modal .btn-success').remove();
+		},
+        success: function(json) {
+			if (json['error']) {
+				$('#merge_form').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + ' </div>');
+			}
+			if (json['success']) {
+				$('#merge_form').prepend('<div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> ' + json['success'] + ' </div>');
+			}
+        }
+	});
+}
+</script>
+{% endif %}
+						
+  <script src="view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+  <link href="view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" media="screen" />
+  <script type="text/javascript"><!--
+$('.date').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false
+});
+//--></script></div>
+<!-- Modal -->
+
+
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+<iframe src="https://vdoma-kiev.com/admin/index.php?route=extension/shipping/novaposhta/getCNList&user_token={{ user_token }}" width="100%" height="1000" frameborder="1"> </iframe>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+<iframe src="https://vdoma-kiev.com/admin/index.php?route=extension/shipping/novaposhta/getCNList&user_token={{ user_token }}" width="100%" height="1000" frameborder="1"> </iframe>
+
+   
+
+   </div>
+  </div>
+</div>
+
+
+					<!-- START Shipping Data -->
+					<style>
+						.btn-novaposhta {
+							color: #333;
+							background-color: #ff392e;
+							border-color: #ccc;
+						}
+						.btn-light-novaposhta {
+							color: #333;
+							background-color: #fff;
+							border-color: #ff392e;
+						}
+						.btn-ukrposhta {
+							color: #333;
+							background-color: #ffce2f;
+							border-color: #ccc;
+						}
+						.btn-light-ukrposhta {
+							color: #333;
+							background-color: #fff;
+							border-color: #ffce2f;
+						}
+					</style>
+					<!-- START Modal assignment CN to order -->
+					<div class="modal fade" id="assignment-cn-to-order" tabindex="-1" role="dialog" aria-labelledby="assignment-cn-to-order-label">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="assignment-cn-to-order-label">{{ heading_cn }}</h4>
+								</div>
+								<div class="modal-body">
+									<div class="form-group clearfix">
+										<input type="hidden" name="cn_order_id" value="" id="cn_order_id" />
+										<input type="hidden" name="cn_shipping_method" value="" id="cn_shipping_method" />
+										<label class="col-sm-2 control-label" for="cn_number">{{ entry_cn_number }}</label>
+										<div class="col-sm-10">
+											<input type="text" name="cn_number" value="" placeholder="{{ entry_cn_number }}" id="cn_number" class="form-control" />
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary" onclick="assignmentCN();"><i class="fa fa-check"></i></button>
+									<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END Modal assignment CN to order -->
+
+					<script type="text/javascript"><!--
+						function deleteCN(self, shipping_method) {
+							var post_data = 'order_id=' + $(self).parents('tr').find('input[name^="selected"]').val();
+
+							$.ajax( {
+								url: 'index.php?route=extension/shipping/' + shipping_method + '/deleteCNFromOrder&user_token={{ user_token }}',
+								type: 'POST',
+								data: post_data,
+								dataType: 'json',
+								beforeSend: function () {
+									$('body').fadeTo('fast', 0.7).prepend('<div id="ocmax-loader" style="position: fixed; top: 50%;	left: 50%; z-index: 9999;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+								},
+								complete: function () {
+									var $alerts = $('.alert-danger, .alert-success');
+
+									if ($alerts.length !== 0) {
+										setTimeout(function() { $alerts.fadeOut() }, 5000);
+									}
+
+									$('body').fadeTo('fast', 1)
+									$('#ocmax-loader').remove();
+								},
+								success: function(json) {
+									if(json['error']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+									}
+
+									if (json['success']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+										setTimeout(function() {
+												location.reload();
+											},
+											2000
+										);
+									}
+
+									$('html, body').animate({ scrollTop: 0 }, 'slow');
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(textStatus);
+								}
+							} );
+						}
+
+						function assignmentCN(self, shipping_method) {
+							if (typeof(self) !== 'undefined') {
+								$('#cn_order_id').val($(self).parents('tr').find('input[name^="selected"]').val());
+							}
+
+							if (shipping_method) {
+								$('#cn_shipping_method').val(shipping_method);
+							}
+
+							if ($('#assignment-cn-to-order').is(':hidden')) {
+								$('#assignment-cn-to-order').modal('show');
+							} else {
+								var post_data = 'order_id=' + $('#cn_order_id').val() + '&cn_number=' + $('#cn_number').val();
+
+								$.ajax( {
+									url: 'index.php?route=extension/shipping/' + $('#cn_shipping_method').val() + '/addCNToOrder&user_token={{ user_token }}',
+									type: 'POST',
+									data: post_data,
+									dataType: 'json',
+									beforeSend: function () {
+										$('body').fadeTo('fast', 0.7).prepend('<div id="ocmax-loader" style="position: fixed; top: 50%;	left: 50%; z-index: 9999;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>');
+									},
+									complete: function () {
+										var $alerts = $('.alert-danger, .alert-success');
+
+										if ($alerts.length !== 0) {
+											setTimeout(function() { $alerts.fadeOut() }, 5000);
+										}
+
+										$('body').fadeTo('fast', 1)
+										$('#ocmax-loader').remove();
+									},
+									success: function(json) {
+										if(json['error']) {
+											$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+										}
+
+										if (json['success']) {
+											$('.container-fluid:eq(1)').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+											setTimeout(function() {
+													location.reload();
+												},
+												2000
+											);
+										}
+
+										$('html, body').animate({ scrollTop: 0 }, 'slow');
+									},
+									error: function (jqXHR, textStatus, errorThrown) {
+										console.log(textStatus);
+									}
+								} );
+
+								$('#assignment-cn-to-order').modal('hide');
+							}
+						}
+
+						$(function() {
+							var post_data = $('input[name^="selected"]');
+
+							$.ajax( {
+								url: 'index.php?route=sale/order/getShippingData&user_token={{ user_token }}',
+								type: 'POST',
+								data: post_data,
+								dataType: 'json',
+								success: function(json) {
+									if(json['error']) {
+										$('.container-fluid:eq(1)').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+										$('html, body').animate({ scrollTop: 0 }, 'slow');
+									}
+
+									if (json instanceof Object) {
+										if (json['shipping_methods']) {
+											var btn_l = '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list-ul"></i> <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right">';
+
+											for (var i in json['shipping_methods']) {
+												btn_l += '<li class="dropdown-header">' + json['shipping_methods'][i]['heading'] + '</li>';
+
+												if (json['shipping_methods'][i]['cn_list']) {
+													btn_l += '<li><a href="' + json['shipping_methods'][i]['cn_list']['href'] + '">' + json['shipping_methods'][i]['cn_list']['text'] + '</a></li>';
+												}
+
+												btn_l += '<li role="separator" class="divider"></li>';
+											}
+
+											btn_l += '</ul></div> ';
+
+											$('div.container-fluid div.pull-right:last').prepend(btn_l);
+										}
+
+										for (var i in json['orders']) {
+											var
+												c       = 0,
+												f       = false,
+												b_class = '',
+												btn_o   = '<div class="btn-group"><button type="button" id="button-cn-' + i + '" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-text-o" aria-hidden="true"></i> <span class="caret"></span></button><ul class="dropdown-menu dropdown-menu-right">';
+
+											btn_o += '<li class="dropdown-header">' + json['heading_cn'] + '</li>';
+											btn_o += '<li role="separator" class="divider"></li>';
+
+											for (var ii in json['orders'][i]) {
+												c++;
+
+												btn_o += '<li class="dropdown-header">' + json['shipping_methods'][ii]['heading'] + '</li>';
+
+												if (json['orders'][i][ii]['create']) {
+													btn_o += '<li><a href="' + json['orders'][i][ii]['create']['href'] + '">' + json['orders'][i][ii]['create']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['edit']) {
+													f = true;
+													btn_o += '<li><a href="' + json['orders'][i][ii]['edit']['href'] + '">' + json['orders'][i][ii]['edit']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['delete']) {
+													f = true;
+													btn_o += '<li><a style="cursor: pointer;" onclick="deleteCN(this, \'' + ii + '\');">' + json['orders'][i][ii]['delete']['text'] + '</a></li>';
+												}
+
+												if (json['orders'][i][ii]['assignment']) {
+													btn_o += '<li><a style="cursor: pointer;" onclick="assignmentCN(this, \'' + ii + '\');">' + json['orders'][i][ii]['assignment']['text'] + '</a></li>';
+												}
+
+												btn_o += '<li role="separator" class="divider"></li>';
+
+												if (f) {
+													b_class = 'btn-' + ii;
+
+													continue;
+												} else {
+													b_class = 'btn-light-' + ii;
+												}
+											}
+
+											btn_o += '</ul></div> ';
+
+											$('input[value="' + i + '"]').parents('tr').find('td:last div:first').prepend(btn_o);
+
+											if (c != 1) {
+												if (f) {
+													b_class = 'btn-info';
+												} else {
+													b_class = 'btn-default';
+												}
+											}
+
+											$('input[value="' + i + '"]').parents('tr').find('[id^="button-cn"]').addClass(b_class);
+										}
+									}
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(textStatus);
+								}
+							} );
+						} );
+					//--></script>
+					<!-- END Shipping Data -->
+    		{{ notify }}
+{{ footer }} 
+
+		<style>
+					.cl.hid {
+						display:none;
+					}
+					.cl {
+						display:block;
+					}
+					.open_all_product {
+						background:#fff;
+						border:1px solid #d9d9d9;
+						border-radius:5px;
+						text-align:center;
+						position:relative;
+						height:20px;
+						width:100%;
+						
+					}
+					.open_all_product:before {
+						width: 0; 
+						height: 0; 
+						border-left: 5px solid transparent;
+						border-right: 5px solid transparent;
+						border-top: 5px solid #000;
+						content:"";
+						position:absolute;
+						top:7px;
+					}
+					.open_all_product.active:after {
+						width: 0; 
+						height: 0; 
+						border-left: 5px solid transparent;
+						border-right: 5px solid transparent;
+						border-bottom: 5px solid #000;
+						content:"";
+						position:absolute;
+						top:7px;
+					}
+					.open_all_product.active:before {
+						width: 0; 
+						height: 0; 
+						border-left: 0px solid transparent;
+						border-right: 0px solid transparent;
+						border-bottom: 0px solid #000;
+						content:"";
+						position:absolute;
+						top:5px;
+					}
+					.options-product {
+						word-wrap:break-word;
+					}
+				</style>
+		
+		<script>
+		
+		$(document).ready(function() {
+		var table_out_width = $('.table').outerWidth();
+		var table_responsive = $('.table').parent().parent().outerWidth();
+		
+		if ($('.table').outerWidth() > $('.table').parent().parent().outerWidth()) {
+	
+				var html = '<div class="joystick shadow"><div class="joystick_left"></div><div class="joystick_right"></div></div>';
+				$('.table').parent().parent().prepend(html);
+				$('.joystick').hover(
+					function () { $(this).animate({'opacity':'1.0'}, 300); },
+					function () { $(this).animate({'opacity':'0.5'}, 300); }
+				);
+				$(document).on('click', '.joystick_left, .joystick_right', function () {
+					var this_ = $(this);
+					var width = $('.table').parent().outerWidth();
+					var scroll_left = $('.table').parent().scrollLeft();
+					
+					if (this_.attr('class') == 'joystick_left') {
+						$('.table').parent().animate({'scrollLeft':(scroll_left - 400)}, 400);
+					} else {
+						$('.table').parent().animate({'scrollLeft':(scroll_left + 400)}, 400);
+					}
+				});
+			}
+		});
+		</script>
+		<style>
+			.joystick {
+					position:fixed;
+					top:50%;
+					left:50%;
+					width:150px;
+					background:#F0F0F0;
+					opacity:0.5;
+					margin-left:-50px;
+					padding:5px;
+					border:1px solid #CCC;
+					border-radius:3px;
+					z-index:9999;
+				}
+				.joystick_left {
+					float:left;
+					background:url(view/image/go_left.png) no-repeat top center;
+				}
+				.joystick_right {
+					float:right;
+					background:url(view/image/go_right.png) no-repeat top center;
+				}
+				.joystick_left, .joystick_right {
+					width:36px;
+					height:36px;
+					border:1px solid #F0F0F0;
+					padding-bottom:2px;
+				}
+				.joystick_left:hover, .joystick_right:hover {
+					border:1px solid #CCC;
+					border-radius:3px;
+					cursor:pointer;
+				}
+		</style>
+		<script>
+				
+			function ChangeHistory(orderId, statusId, user_change) {
+					var comment = '';
+					var notify = $('#input-notify-' + orderId).prop('checked') ? 1 : 0;
+					var override = 1;
+					var append = 0;
+					$.ajax({
+						url: '{{ catalog }}index.php?route=api/order/history&api_token={{ api_token }}&store_id={{ store_id }}&order_id='+ orderId +'',
+						type: 'post',
+						dataType: 'json',
+						data: 'order_status_id='+ statusId +'&notify='+ notify +'&override='+ override +'&append='+ append +'&comment='+ comment,
+						
+						success: function(json) {
+							$('.alert').remove();
+
+							if (json['error']) {
+								$('#form-order').before('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+							}
+
+							if (json['success']) {
+								$('#form-order').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+							}
+						},
+						error: function(xhr, ajaxOptions, thrownError) {
+							alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+						}
+					});
+				}
+				function setOrderStatus(orderId, statusId, user_change) {
+					$.ajax({
+						url: 'index.php?route=sale/order/setOrderStatus&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&order_status_id=' + statusId + '&user_change=' + user_change,
+						dataType: 'json',
+						beforeSend: function() {
+							$('.success, .warning, .attention, .error').remove();
+						},			
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();	
+							$('#row_' + orderId).attr('style', 'background-color: ' + json['background_color'] + ' !important; color:'+ json['color_text'] +'');	
+						}
+					});
+				}
+				function saveCommentManager(orderId,value) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/saveCommentManager&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&comment_manager=' + value,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function saveTTN(orderId,value) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/saveTTN&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&text_ttn=' + value,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function sendTTN(orderId) {	
+				
+					var number_ttn = $('#number_ttn_' + orderId).val();
+					var email_user = $('#email_' + orderId).val();	
+					$.ajax({
+						url: 'index.php?route=sale/order/sendTTN&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&number_ttn=' + number_ttn + '&email_user=' + email_user,
+						dataType: 'json',
+						beforeSend: function() {
+							$('#button-customer_'+ orderId).button('loading');
+						},
+						complete: function() {
+							$('#button-customer_'+ orderId).button('reset');
+						},
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							$('#form-order').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+							}	
+						}
+					});
+				}
+				
+				function savePriceZak(orderId,value, product_id) {
+				var arr = new Array();
+						var sum_price_zak = 0;
+						$('.price_zak_' + orderId).each(function() {
+							  sum_price_zak+=parseFloat($(this).val()*$(this).attr('sum'));
+						});	
+						$('.delivery_price_' + orderId).each(function() {
+							delivery_price_val = $(this).val();
+							if(delivery_price_val ==''){
+								delivery_price = '0';
+							} else { 
+								delivery_price = delivery_price_val;
+							}
+						});	
+						var build_price = $('.build_price_' + orderId).val();
+					    var build_price_prefix = $('.build_price_prefix_' + orderId).val();							
+						
+						$('.rise_product_price_' + orderId).each(function() {
+							rise_product_price_val = $(this).val();
+							if(rise_product_price_val ==''){
+								rise_product_price = '0';
+							} else { 
+								rise_product_price = rise_product_price_val;
+							}
+						});	
+						
+						$('.rise_product_price_prefix_' + orderId).each(function() {
+							rise_product_price_prefix = $(this).val();							
+						});	
+										
+					$.ajax({
+						url: 'index.php?route=sale/order/savePriceZak&user_token={{ user_token }}',
+						type: 'post',						
+						data: '&order_id=' + orderId + '&price_zak=' + value + '&product_id=' + product_id + '&sum_price_zak=' + sum_price_zak + '&delivery_price=' + delivery_price + '&build_price=' + build_price + '&build_price_prefix=' +  encodeURIComponent(build_price_prefix) + '&rise_product_price=' + rise_product_price + '&rise_product_price_prefix=' + encodeURIComponent(rise_product_price_prefix),
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}
+							if (json['calculated_summ']) {
+								$('#calculated_summ_' + orderId).text(json['calculated_summ']);
+							}							
+						}
+					});
+				}
+				function saveManagerUser(orderId,value) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/saveManagerUser&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&manager_user=' + value,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function updateBuild(orderId,build_price_yes_no) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/updateBuild&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&build_price_yes_no=' + build_price_yes_no,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function updateRiseProduct(orderId,rise_product_yes_no) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/updateRiseProduct&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&rise_product_yes_no=' + rise_product_yes_no,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+</script>
+		
