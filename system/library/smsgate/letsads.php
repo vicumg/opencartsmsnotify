@@ -54,13 +54,13 @@ class letsads extends SmsGate {
     $xml .= '</request>';
       
     $response = ocmFileGet('http://letsads.com/api', $xml);
-      var_dump($response);die();
+
     $result = array();
     $xml_response = simplexml_load_string($response);
     if (!empty($xml_response)) {
       if ($xml_response[0]->name == 'Error') {
         $result['success'] = false;
-        $result['description'] = $xml_response[0]->description;
+        $result['description'] = $xml_response[0]->description->__toString();
       } else {
         $result['success'] = true;
       }

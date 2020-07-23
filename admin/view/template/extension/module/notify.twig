@@ -1,13 +1,15 @@
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 9999;">
+<div class="modal fade" id="notifyModal" tabindex="-1" role="dialog" aria-labelledby="notifyModalLabel" aria-hidden="true" style="z-index: 9999;">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+    <div class="modal-content"><div class="loader" id="loader-sms"></div>
+       <div class="modal-header">
+        <h5 class="modal-title" id="notifyModalLabel">Уведомить покупателя</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
+         <div class="balance">Баланс: {{ balance }}</div>
       </div>
+      <div class="status-message" id="response-message" onclick="this.classList.remove('active')"></div>
       <div class="modal-body">
         <!-- content-->
         <div class="modal-tabs">
@@ -18,9 +20,9 @@
                   {% else %}
                     {% set active = '' %}
                   {% endif %}
-            <button class="tablinks {{ active }}" onclick="openCity(event, 'v-pills-{{ key }}' )">{{ template.name }}</button>
+            <button class="tablinks {{ active }}" onclick="openTab(event, 'v-pills-{{ key }}' )">{{ template.name }}</button>
                {% endfor %}
-            <button class="tablinks" onclick="openCity(event, 'v-pills-new' )">Пустая</button>
+            <button class="tablinks" onclick="openTab(event, 'v-pills-new' )">Пустая</button>
           </div>
           <div class="tab_content">
             <div class="notify-customer-info">
@@ -33,16 +35,18 @@
             </div>
               {% for key,template in customers_templates %}
                 {% if loop.first %}
-                  {% set active = 'active' %}
+                  {% set active = 'active-text' %}
                         {% else %}
                       {% set active = '' %}
                   {% endif %}
                 <div id="v-pills-{{ key }}" class="tabcontent {{ active }}">
-                  <textarea id="template_text_{{ key }}" class="notify-template-text form-control" rows="5">{{ template.text }}</textarea>
+                  <input hidden type="text" value="{{ template.text }}" id="template_text_{{ key }}" class="notify-template-template">
+                  <textarea id="template_text_{{ key }}" class="notify-template-text form-control" rows="5"></textarea>
                 </div>
 
               {% endfor %}
             <div id="v-pills-new" class="tabcontent">
+              <input hidden type="text" value="" id="template_text_new" class="notify-template-template">
               <textarea id="template_text_new" class="notify-template-text form-control" rows="5"></textarea>
             </div>
           </div>
@@ -51,24 +55,67 @@
           <!-- content-->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Отправить СМС</button>
-        <button type="button" class="btn btn-primary">Viber</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary" onclick="sendSms()">Отправить СМС</button>
+        <button type="button" class="btn btn-primary" onclick="sendViber()">Viber</button>
       </div>
     </div>
   </div>
 </div>
-<script>
-  function showMessenger(name='',phone='',order='',ttn='') {
 
+<script>
+  // patterns for replacement with order data
+  var replaceVars= {
+    order_id:'{order_id}',
+    phone:'{phone}',
+    ttn:'{ttn}',
+    name:'{name}',
+    summ:'{sum}',
+  };
+
+//show modal window for notify
+  function showMessenger(name='',phone='',order='',ttn='',sum='') {
+
+    // update order data for current order to notify
     $('#notify-customer-name').html(name);
     $('#notify-customer-order').html(order);
     $('#notify-customer-phone').val(phone);
-    $('#notify-customer-ttn').val(ttn);
+    $('#notify-customer-ttn').html(ttn);
+
+    //fill templates with order data
+    updateTemplateText(name,phone,order,ttn,sum);
+
+  }
+// replace some text in templates by patterns
+  function updateTemplateText(name,phone,order_id,ttn,sum) {
+
+    let inputVars={
+      order_id:order_id,
+      phone:phone,
+      ttn:ttn,
+      name:name,
+      summ:sum,
+    }
+
+
+    let messages = document.getElementsByClassName('notify-template-text');
+    let templates = document.getElementsByClassName('notify-template-template');
+
+
+
+      for (let i=0;i< templates.length; i++){
+        messages[i].value = templates[i].value;
+        for (let replaceVar in replaceVars){
+          messages[i].value =  messages[i].value.replace(replaceVars[replaceVar],inputVars[replaceVar]);
+
+
+      }
+    }
 
   }
 
-  function openCity(evt, cityName) {
+  //tabs functionality
+  function openTab(evt, tabName) {
     // Declare all variables
     var i, tabcontent, tablinks;
 
@@ -86,12 +133,92 @@
     }
 
     // Show the current tab, and add an "active" class to the link that opened the tab
-    document.getElementById(cityName).style.display = "block";
-    document.getElementById(cityName).classList.add('active-text');
+    document.getElementById(tabName).style.display = "block";
+    document.getElementById(tabName).classList.add('active-text');
     evt.currentTarget.className += " active";
   }
+
+  function sendSms() {
+    const sms = new Sms();
+    sms.sendSms();
+  }
+
+  function sendViber() {
+    const sms = new Sms();
+    sms.sendViber();
+  }
+
+  class Sms {
+
+    url ='index.php?route=extension/module/ochelp_sms_notify/sendSms&user_token=';
+    constructor(){
+      this.phone = '#notify-customer-phone';
+      this.text = '#notifyModal .active-text textarea';
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('user_token');
+      this.url+=token;
+      this.receiver = document.querySelector(this.phone).value;
+      this.message = document.querySelector(this.text).value;
+    }
+
+    smsFillData(){
+      this.data = new URLSearchParams();;
+      this.data.append('phone',this.receiver);
+      this.data.append('sms_message',this.message);
+
+    }
+
+    sendSms(){
+      this.smsFillData();
+
+    document.getElementById('loader-sms').classList.add('active') ;
+
+    fetch(this.url, {
+      "headers": {
+        "accept": "application/json, text/javascript, */*; q=0.01",
+        "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,fr;q=0.6,nl;q=0.5,uk;q=0.4",
+        "cache-control": "no-cache",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "pragma": "no-cache",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin"
+      },
+      "referrerPolicy": "no-referrer-when-downgrade",
+      "body": this.data,
+      "method": "POST",
+      "mode": "cors",
+      "credentials": "include"
+    }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            document.getElementById('loader-sms').classList.remove('active') ;
+            let responseMessage = document.getElementById('response-message');
+            if (data.result.success == true){
+              responseMessage.innerHTML= '<span class="sms-success">'+data.success+'<span>' ;
+            } else {
+              responseMessage.innerHTML ='<span class="sms-error">'+data.result.description+'<span>';
+            }
+
+            responseMessage.classList.add('active');
+
+
+        });
+    }
+    sendViber(){
+      navigator.clipboard.writeText(this.message);
+      console.log(this.receiver);
+      location.href='viber://chat?number='+this.receiver;
+
+    }
+
+  }
+
 </script>
 <style>
+  #notifyModal .modal-header{
+    margin-bottom: 30px;
+  }
   .modal-tabs {
     display: flex;
     width: 100%;
@@ -105,7 +232,7 @@
   .tab {
     float: left;
     border: 1px solid #ccc;
-
+      overflow-y: auto;
     width: 30%;
     height: 300px;
   }
@@ -115,7 +242,7 @@
     display: block;
     background-color: inherit;
     color: black;
-    padding: 22px 16px;
+    padding: 8px 16px;
     width: 100%;
     border: none;
     outline: none;
@@ -146,12 +273,10 @@
 
     width: 100%;
     border-left: none;
-    height: 300px;
+    height: 200px;
     display: none;
   }
-  .tabcontent.active{
-    display: block;
-  }
+
   .notify-template-text{
     width: 100%;
     margin-top: 15px;
@@ -162,5 +287,93 @@
   .notify-customer-info{
     margin: 5px;
     padding: 5px;
+  }
+
+  /*loader*/
+
+  .loader {
+    display: none;
+    animation: spin 1s infinite linear;
+    border: solid 2vmin transparent;
+    border-radius: 50%;
+    border-right-color: #09f;
+    border-top-color: #09f;
+    box-sizing: border-box;
+    height: 20vmin;
+    left: calc(50% - 10vmin);
+    position: fixed;
+    top: calc(50% - 10vmin);
+    width: 20vmin;
+    z-index: 1;
+  }
+  .loader:before {
+    animation: spin 2s infinite linear;
+    border: solid 2vmin transparent;
+    border-radius: 50%;
+    border-right-color: #3cf;
+    border-top-color: #3cf;
+    box-sizing: border-box;
+    content: "";
+    height: 16vmin;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 16vmin;
+  }
+  .loader:after {
+    animation: spin 3s infinite linear;
+    border: solid 2vmin transparent;
+    border-radius: 50%;
+    border-right-color: #6ff;
+    border-top-color: #6ff;
+    box-sizing: border-box;
+    content: "";
+    height: 12vmin;
+    left: 2vmin;
+    position: absolute;
+    top: 2vmin;
+    width: 12vmin;
+  }
+
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+
+  .status-message {
+    display: none;
+    height: 25px;
+    position: absolute;
+    width: 80%;
+    margin-left: 20px;
+    top: 85px;
+  }
+  .active{
+    display: block;
+  }
+  .sms-success{
+    color: green;
+  }
+  .sms-error{
+    color: red;
+  }
+  .active-text{
+    display: block;
+  }
+  .balance {
+    margin: 5px 0;
+  }
+  .middle-order .messenger_button{
+
+    position: absolute;
+    right: 10px;
+    top: 6px;
+
+  }
+  .messenger_button .btn{
+    padding: 2px 5px;
+    margin: auto;
   }
 </style>
