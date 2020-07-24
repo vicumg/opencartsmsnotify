@@ -2,26 +2,26 @@
 <div class="modal fade" id="notifyModal" tabindex="-1" role="dialog" aria-labelledby="notifyModalLabel" aria-hidden="true" style="z-index: 9999;">
   <div class="modal-dialog" role="document">
     <div class="modal-content"><div class="loader" id="loader-sms"></div>
-       <div class="modal-header">
+      <div class="modal-header">
         <h5 class="modal-title" id="notifyModalLabel">Уведомить покупателя</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-         <div class="balance">Баланс: {{ balance }}</div>
+        <div class="balance">Баланс: {{ balance }}</div>
       </div>
       <div class="status-message" id="response-message" onclick="this.classList.remove('active')"></div>
       <div class="modal-body">
         <!-- content-->
         <div class="modal-tabs">
           <div class="tab nav">
-          {% for key,template in customers_templates %}
-                {% if loop.first %}
+            {% for key,template in customers_templates %}
+              {% if loop.first %}
                 {% set active = 'active' %}
-                  {% else %}
-                    {% set active = '' %}
-                  {% endif %}
-            <button class="tablinks {{ active }}" onclick="openTab(event, 'v-pills-{{ key }}' )">{{ template.name }}</button>
-               {% endfor %}
+              {% else %}
+                {% set active = '' %}
+              {% endif %}
+              <button class="tablinks {{ active }}" onclick="openTab(event, 'v-pills-{{ key }}' )">{{ template.name }}</button>
+            {% endfor %}
             <button class="tablinks" onclick="openTab(event, 'v-pills-new' )">Пустая</button>
           </div>
           <div class="tab_content">
@@ -33,18 +33,18 @@
               <label for="" id="notify-customer-ttn" class="control-label"></label>
               <input type="text" id="notify-customer-phone" class="form-control">
             </div>
-              {% for key,template in customers_templates %}
-                {% if loop.first %}
-                  {% set active = 'active-text' %}
-                        {% else %}
-                      {% set active = '' %}
-                  {% endif %}
-                <div id="v-pills-{{ key }}" class="tabcontent {{ active }}">
-                  <input hidden type="text" value="{{ template.text }}" id="template_text_{{ key }}" class="notify-template-template">
-                  <textarea id="template_text_{{ key }}" class="notify-template-text form-control" rows="5"></textarea>
-                </div>
+            {% for key,template in customers_templates %}
+              {% if loop.first %}
+                {% set active = 'active-text' %}
+              {% else %}
+                {% set active = '' %}
+              {% endif %}
+              <div id="v-pills-{{ key }}" class="tabcontent {{ active }}">
+                <input hidden type="text" value="{{ template.text }}" id="template_text_{{ key }}" class="notify-template-template">
+                <textarea id="template_text_{{ key }}" class="notify-template-text form-control" rows="5"></textarea>
+              </div>
 
-              {% endfor %}
+            {% endfor %}
             <div id="v-pills-new" class="tabcontent">
               <input hidden type="text" value="" id="template_text_new" class="notify-template-template">
               <textarea id="template_text_new" class="notify-template-text form-control" rows="5"></textarea>
@@ -52,7 +52,7 @@
           </div>
           <div class="clearfix"></div>
         </div>
-          <!-- content-->
+        <!-- content-->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -73,7 +73,7 @@
     summ:'{sum}',
   };
 
-//show modal window for notify
+  //show modal window for notify
   function showMessenger(name='',phone='',order='',ttn='',sum='') {
 
     // update order data for current order to notify
@@ -86,7 +86,7 @@
     updateTemplateText(name,phone,order,ttn,sum);
 
   }
-// replace some text in templates by patterns
+  // replace some text in templates by patterns
   function updateTemplateText(name,phone,order_id,ttn,sum) {
 
     let inputVars={
@@ -103,10 +103,10 @@
 
 
 
-      for (let i=0;i< templates.length; i++){
-        messages[i].value = templates[i].value;
-        for (let replaceVar in replaceVars){
-          messages[i].value =  messages[i].value.replace(replaceVars[replaceVar],inputVars[replaceVar]);
+    for (let i=0;i< templates.length; i++){
+      messages[i].value = templates[i].value;
+      for (let replaceVar in replaceVars){
+        messages[i].value =  messages[i].value.replace(replaceVars[replaceVar],inputVars[replaceVar]);
 
 
       }
@@ -171,43 +171,44 @@
     sendSms(){
       this.smsFillData();
 
-    document.getElementById('loader-sms').classList.add('active') ;
+      document.getElementById('loader-sms').classList.add('active') ;
 
-    fetch(this.url, {
-      "headers": {
-        "accept": "application/json, text/javascript, */*; q=0.01",
-        "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,fr;q=0.6,nl;q=0.5,uk;q=0.4",
-        "cache-control": "no-cache",
-        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "pragma": "no-cache",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin"
-      },
-      "referrerPolicy": "no-referrer-when-downgrade",
-      "body": this.data,
-      "method": "POST",
-      "mode": "cors",
-      "credentials": "include"
-    }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            document.getElementById('loader-sms').classList.remove('active') ;
-            let responseMessage = document.getElementById('response-message');
-            if (data.result.success == true){
-              responseMessage.innerHTML= '<span class="sms-success">'+data.success+'<span>' ;
-            } else {
-              responseMessage.innerHTML ='<span class="sms-error">'+data.result.description+'<span>';
-            }
+      fetch(this.url, {
+        "headers": {
+          "accept": "application/json, text/javascript, */*; q=0.01",
+          "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,fr;q=0.6,nl;q=0.5,uk;q=0.4",
+          "cache-control": "no-cache",
+          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "pragma": "no-cache",
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin"
+        },
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": this.data,
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+      }).then((response) => {
+        return response.json();
+      }).then((data) => {
+        document.getElementById('loader-sms').classList.remove('active') ;
+        let responseMessage = document.getElementById('response-message');
 
-            responseMessage.classList.add('active');
+        if (data.result.success == true){
+          responseMessage.innerHTML= '<span class="sms-success">'+data.success+'<span>' ;
+        } else {
+          responseMessage.innerHTML ='<span class="sms-error">'+data.result.description+'<span>';
+        }
+
+        responseMessage.classList.add('active');
 
 
-        });
+      });
     }
     sendViber(){
       navigator.clipboard.writeText(this.message);
-      console.log(this.receiver);
+
       location.href='viber://chat?number='+this.receiver;
 
     }
@@ -232,7 +233,7 @@
   .tab {
     float: left;
     border: 1px solid #ccc;
-      overflow-y: auto;
+    overflow-y: auto;
     width: 30%;
     height: 300px;
   }

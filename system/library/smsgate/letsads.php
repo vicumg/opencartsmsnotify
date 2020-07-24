@@ -63,6 +63,7 @@ class letsads extends SmsGate {
         $result['description'] = $xml_response[0]->description->__toString();
       } else {
         $result['success'] = true;
+        $result['description'] = $xml_response[0]->description->__toString();
       }
     }
     return $result;

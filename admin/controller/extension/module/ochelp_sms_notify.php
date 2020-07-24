@@ -407,13 +407,14 @@ class ControllerExtensionModuleOchelpSmsNotify extends Controller {
 			);
 
 			$sms = new Sms($this->config->get('sms_notify_gatename'), $options);
-			$sms->send();
+            $result = $sms->send();
 
 			if($order_info) {
 				$this->model_extension_module_ochelp_sms_notify->addOrderHistory($order_info['order_id'], $order_info['order_status_id'], $options['message']);
 			}
 
 			$json['success'] = $this->language->get('text_success_sms');
+            $json['result'] = $result;
 		}
 
 		$this->response->setOutput(json_encode($json));
