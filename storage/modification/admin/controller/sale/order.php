@@ -607,7 +607,8 @@ class ControllerSaleOrder extends Controller {
 			$data['on_off_column_manager_process_orders'] = '0';
 		}
 		
-		
+		//vicumg
+        $data['notify']=$this->load->controller('extension/module/notify');
 		$this->language->load('user/user');
 		$this->load->model('user/user');
 		$this->language->load('common/header');
@@ -874,11 +875,10 @@ class ControllerSaleOrder extends Controller {
 
 		$order_total = $this->model_sale_order->getTotalOrders($filter_data);
 
-		$results = $this->model_sale_order->getOrders($filter_data);
+	//	$results = $this->model_sale_order->getOrders($filter_data);
+		$results = $this->model_sale_order->getOrdersByTabs($filter_data);
 
-		//vicumg
-        $data['notify']=$this->load->controller('extension/module/notify');
-
+      
         //svs_order_plus_plus start
         
         $novaposhta_cn_number = [];
@@ -1014,6 +1014,11 @@ class ControllerSaleOrder extends Controller {
 		} else {
 			$data['error_warning'] = '';
 		}
+        if (isset($this->session->data['order_active_tab'])) {
+            $data['order_active_tab']=$this->session->data['order_active_tab'];
+        }else{
+            $data['order_active_tab']='';
+        }
 
 		if (isset($this->session->data['success'])) {
 			$data['success'] = $this->session->data['success'];
@@ -1240,18 +1245,22 @@ class ControllerSaleOrder extends Controller {
 
 		$this->load->model('localisation/order_status');
 
-		$data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
-
+		 $orderStatuses = $this->model_localisation_order_status->getOrderStatuses();
+        $data['order_statuses']=[];
       
         //svs_order_plus_plus start
         
         $filter_data['limit'] = 100000;
         
-        foreach ($data['order_statuses'] as $key => &$value) {
-            
-            $filter_data['filter_order_status_id'] = $value['order_status_id'];
-            
-            $value['name'] .= ' ('. $this->model_sale_order->getTotalOrders($filter_data) .')';
+        foreach ($orderStatuses as $key => $value) {
+            $orderStatusId= $value['order_status_id'];
+            $filter_data['filter_order_status_id'] = $orderStatusId;
+            $ordersWithStatus =  $this->model_sale_order->getTotalOrders($filter_data);
+
+            $data['order_statuses'][$orderStatusId]['orders_count'] = (int)$ordersWithStatus;
+            $data['order_statuses'][$orderStatusId]['order_status_id'] = $orderStatusId;
+            $data['order_statuses'][$orderStatusId]['name'] = $value['name'];
+
         }
         
         //svs_order_plus_plus end
@@ -3191,4 +3200,14 @@ class ControllerSaleOrder extends Controller {
 
 		$this->response->setOutput($this->load->view('sale/order_shipping', $data));
 	}
+
+	public function setActiveTab(){
+
+	    $this->session->data['order_active_tab']=$this->request->post['order_active_tab'];
+
+        $json['success'] ='success';
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
 }

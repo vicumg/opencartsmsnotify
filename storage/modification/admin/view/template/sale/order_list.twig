@@ -63,11 +63,11 @@
               {% for order_status in order_statuses %}
               {% if order_status.order_status_id == filter_order_status_id %}
               
-              <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+              <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}  ({{ order_status.orders_count }}) </option>
               
               {% else %}
               
-              <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+              <option value="{{ order_status.order_status_id }}">{{ order_status.name }}  ({{ order_status.orders_count }})</option>
               
               {% endif %}
               {% endfor %}
@@ -152,16 +152,16 @@ $('#button-clear-input-product_name').on('click',function(){
       <div class="panel panel-default">
         <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-list"></i> {{ text_list }}</h3></div>
         <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab-new" data-toggle="tab">Новый</a></li>
-              <li><a href="#tab-prinyat" data-toggle="tab">Принят</a></li>
-              <li><a href="#tab-obrabotan" data-toggle="tab">Обработан</a></li>
-        <li><a href="#tab-oplachen" data-toggle="tab">Оплаченный</a></li>
-              <li><a href="#tab-otgruzhen" data-toggle="tab">Отгружен</a></li>
+              <li class="active"><a href="#tab-new" data-toggle="tab">Новый - {{ order_statuses[1].orders_count }}</a></li>
+              <li><a href="#tab-prinyat" data-toggle="tab">Принят - {{ order_statuses['10'].orders_count }}</a></li>
+              <li><a href="#tab-obrabotan" data-toggle="tab">Обработан -{{ order_statuses['2'].orders_count }}</a></li>
+        <li><a href="#tab-oplachen" data-toggle="tab">Оплаченный -{{ order_statuses['14'].orders_count + order_statuses['5'].orders_count }}</a></li>
+              <li><a href="#tab-otgruzhen" data-toggle="tab">Отгружен -{{ order_statuses['15'].orders_count }}</a></li>
 
               <li><a href="#tab-svyazatsa" data-toggle="tab">Не удалось связаться</a></li>
-              <li><a href="#tab-otvet" data-toggle="tab">До ответа клиента</a></li>
-              <li><a href="#tab-vypolnen" data-toggle="tab">Выполнен</a></li>
-              <li><a href="#tab-otmenen" data-toggle="tab">Отменен</a></li>
+              <li><a href="#tab-otvet" data-toggle="tab">До ответа клиента -{{ order_statuses['11'].orders_count }}</a></li>
+              <li><a href="#tab-vypolnen" data-toggle="tab">Выполнен -{{ order_statuses['3'].orders_count }}</a></li>
+              <li><a href="#tab-otmenen" data-toggle="tab">Отменен -{{ order_statuses['7'].orders_count }}</a></li>
               <li><a href="#tab-vse" data-toggle="tab">Все</a></li>
           </ul>
           <div class="tab-content">
@@ -211,10 +211,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
+				<div class="messenger_button">
 						<a href="javascript:void(0);" class="btn btn-info show messenger "
-						   data-toggle="modal" data-target="#exampleModal"
-						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}',{{ order['novaposhta_cn_number'] }});"
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -460,9 +460,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -709,9 +710,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -958,9 +960,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -1207,9 +1210,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -1456,9 +1460,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -1695,7 +1700,7 @@ $('#button-clear-input-product_name').on('click',function(){
                  
 		{% for order in orders %}
 		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
-		{% if order.order_status_id ==  ''%}
+		{% if order.order_status_id ==  '11' %}
                   <td class="text-center"> {% if order.order_id in selected %}
                     <input type="checkbox" name="selected[]" value="{{ order.order_id }}" checked="checked" />
                     {% else %}
@@ -1705,9 +1710,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -1954,9 +1960,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -2203,9 +2210,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -2454,9 +2462,10 @@ $('#button-clear-input-product_name').on('click',function(){
                   <td class="text-right">{{ order.order_id }}</td>
                    
 				<td class="text-left" style="min-width:210px;">
-					<div class="messenger_button">
-						<a href="javascript:void(0);" class="btn btn-info show messenger"
-						   onclick="showMessenger({{ order['telephone'] }},{{ order.order_id }},{{ order['novaposhta_cn_number'] }});"
+				<div class="messenger_button">
+						<a href="javascript:void(0);" class="btn btn-info show messenger "
+						   data-toggle="modal" data-target="#notifyModal"
+						   onclick="showMessenger('{{ order['customer'] }}','{{ order['telephone'] }}','{{ order.order_id }}','{{ order['novaposhta_cn_number'] }}','{{ order['total'] }}');"
 						>Отправить уведомление</a>
 					</div>
 					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
@@ -2952,6 +2961,9 @@ $('.date').datetimepicker({
 </div>
 
 
+          	{{ notify }}
+          	
+
 					<!-- START Shipping Data -->
 					<style>
 						.btn-novaposhta {
@@ -3206,7 +3218,7 @@ $('.date').datetimepicker({
 						} );
 					//--></script>
 					<!-- END Shipping Data -->
-    		{{ notify }}
+    			
 {{ footer }} 
 
 		<style>
@@ -3501,5 +3513,31 @@ $('.date').datetimepicker({
 						}
 					});
 				}
+
+				$(document).ready(function () {
+					let orderActiveTabDefault = '{{ order_active_tab }}';
+							if (orderActiveTabDefault !==''){
+								$(`.nav-tabs li a[href="${orderActiveTabDefault}"]`).trigger('click');
+							}
+
+					$('.nav-tabs li a').on('click',function(){
+						let link = this.href;
+						let orderActiveTab = '#'+link.split('#')[1];
+						if (orderActiveTab) {
+
+							$.ajax({
+								url: 'index.php?route=sale/order/setActiveTab&user_token={{ user_token }}',
+								type: 'post',
+								data: '&order_active_tab=' + orderActiveTab,
+								dataType: 'json',
+								success: function (json) {
+									$('.success, .warning, .attention, .information, .error').remove();
+									if (json['success']) {
+									}
+								}
+							});
+						}
+					});
+				});
 </script>
 		
